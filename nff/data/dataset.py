@@ -270,7 +270,8 @@ class Dataset(TorchDataset):
                 cell=lattice,
                 pbc=True,
                 cutoff=cutoff,
-                directed=(not undirected)
+                directed=(not undirected),
+                device="cpu"
             )
             nbrs, offs = atoms.update_nbr_list()
             nbrlist.append(nbrs)
