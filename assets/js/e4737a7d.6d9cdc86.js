@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[364],{3111:e=>{e.exports=JSON.parse('{"label":"facebook","permalink":"/NeuralForceField/blog/tags/facebook","allTagsPath":"/NeuralForceField/blog/tags","count":1}')}}]);
