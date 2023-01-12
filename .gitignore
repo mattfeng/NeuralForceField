@@ -58,3 +58,6 @@ debug/
 backup
 dist/
 sandbox_excited/
+
+.vscode/
+

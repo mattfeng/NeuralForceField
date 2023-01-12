@@ -42,18 +42,47 @@ class SchNet(nn.Module):
             n_atom_basis = 256
 
             readoutdict = {
-                                "energy_0": [{'name': 'linear', 'param' : { 'in_features': n_atom_basis,
-                                                                          'out_features': int(n_atom_basis / 2)}},
-                                           {'name': 'shifted_softplus', 'param': {}},
-                                           {'name': 'linear', 'param' : { 'in_features': int(n_atom_basis / 2),
-                                                                          'out_features': 1}}],
-                                "energy_1": [{'name': 'linear', 'param' : { 'in_features': n_atom_basis,
-                                                                          'out_features': int(n_atom_basis / 2)}},
-                                           {'name': 'shifted_softplus', 'param': {}},
-                                           {'name': 'linear', 'param' : { 'in_features': int(n_atom_basis / 2),
-                                                                          'out_features': 1}}]
-                            }
-
+                "energy_0": [
+                    {
+                        'name': 'linear',
+                        'param': {
+                            'in_features': n_atom_basis,
+                            'out_features': int(n_atom_basis / 2)
+                        }
+                    },
+                    {
+                        'name': 'shifted_softplus',
+                        'param': {}
+                    },
+                    {
+                        'name': 'linear',
+                        'param': {
+                            'in_features': int(n_atom_basis / 2),
+                            'out_features': 1
+                        }
+                    }
+                ],
+                "energy_1": [
+                    {
+                        'name': 'linear',
+                        'param': {
+                            'in_features': n_atom_basis,
+                            'out_features': int(n_atom_basis / 2)
+                        }
+                    },
+                    {
+                        'name': 'shifted_softplus',
+                        'param': {}
+                    },
+                    {
+                        'name': 'linear',
+                        'param': {
+                            'in_features': int(n_atom_basis / 2),
+                            'out_features': 1
+                        }
+                    }
+                ]
+            }
 
             modelparams = {
                 'n_atom_basis': n_atom_basis,
@@ -69,6 +98,7 @@ class SchNet(nn.Module):
             model = SchNet(modelparams)
 
         """
+
 
         nn.Module.__init__(self)
 
