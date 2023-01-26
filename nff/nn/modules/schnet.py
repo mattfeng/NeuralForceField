@@ -1,3 +1,4 @@
+import os
 
 import torch
 import torch.nn as nn
@@ -43,7 +44,14 @@ def get_rij(xyz,
     offsets = get_offsets(batch, 'offsets')
     # + offsets not - offsets because it's r_j - r_i,
     # whereas for schnet we've coded it as r_i - r_j
-    r_ij = xyz[nbrs[:, 1]] - xyz[nbrs[:, 0]] + offsets
+
+    if os.environ.get("DEBUG"):
+        print(xyz[nbrs[:, 0]].shape)
+        print(xyz[nbrs[:, 1]].shape)
+        print(offsets.shape)
+
+    r_ij = xyz[nbrs[:, 1]] - xyz[nbrs[:, 0]]
+    r_ij += offsets
 
     # remove nbr skin (extra distance added to cutoff
     # to catch atoms that become neighbors between nbr

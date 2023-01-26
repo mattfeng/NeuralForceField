@@ -225,15 +225,22 @@ class AtomsBatch(Atoms):
                 directed=self.directed,
                 requires_large_offsets=self.requires_large_offsets)
 
+
+            if os.environ.get("DEBUG"):
+                print(edge_from.shape, edge_to.shape, offsets.shape)
+
             nbr_list = torch.LongTensor(np.stack([edge_from, edge_to], axis=1))
             these_offsets = sparsify_array(offsets.dot(self.get_cell()))
+
+            if os.environ.get("DEBUG"):
+                print(nbr_list.shape, these_offsets.shape)
             
             # non-periodic
             if isinstance(these_offsets, int):
                 these_offsets = torch.Tensor(offsets)
 
             ensemble_nbr_list.append(
-                self.props['num_atoms'][: i].sum() + nbr_list)
+                self.props['num_atoms'][:i].sum() + nbr_list)
             ensemble_offsets_list.append(these_offsets)
 
         ensemble_nbr_list = torch.cat(ensemble_nbr_list)

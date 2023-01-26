@@ -151,15 +151,19 @@ def torch_nbr_list(atomsobject,
         device (str, optional): Description
         requires_large_offsets: to get offsets beyond -1,0,1
     Returns:
-        i, j, cutoff: just like ase.neighborlist.neighbor_list
+        i, j, offsets: just like ase.neighborlist.neighbor_list
     """
     
     if any(atomsobject.pbc):
         # check if sufficiently large to run the "fast" nbr_list function
         # also check if orthorhombic
         # otherwise, default to the "robust" nbr_list function below for small cells
-        if ( np.all(2*cutoff < atomsobject.cell.cellpar()[:3]) and 
-            not np.count_nonzero(atomsobject.cell.T-np.diag(np.diagonal(atomsobject.cell.T)))!=0 ):
+        # if ( np.all(2*cutoff < atomsobject.cell.cellpar()[:3]) and 
+        #     not np.count_nonzero(atomsobject.cell.T-np.diag(np.diagonal(atomsobject.cell.T)))!=0 ):
+        
+        # forcing slow algorithm
+        if False:
+            # print("running fast torch_nbr_list")
             # "fast" nbr_list function for large cells (pbc)
             xyz = torch.Tensor(atomsobject.get_positions(wrap=False)).to(device)
             dis_mat = xyz[None, :, :] - xyz[:, None, :]
@@ -178,6 +182,7 @@ def torch_nbr_list(atomsobject,
             offsets = offsets[nbr_list[:, 0], nbr_list[:, 1], :].detach().to("cpu").numpy()
 
         else:
+            # print("running slow torch_nbr_list")
             # "robust" nbr_list function for all cells (pbc)
             xyz = torch.Tensor(atomsobject.get_positions(wrap=True)).to(device)
 
@@ -212,12 +217,12 @@ def torch_nbr_list(atomsobject,
                                             ).to(device)
             xyz_T = torch.repeat_interleave(xyz.view(-1,1,3), N, dim=1)
             xyz_T = xyz_T + lattice_points_T.view(xyz_T.shape)
-            diss=xyz_T[None,:,None,:,:]-xyz_T[:,None,:,None,:]
-            diss=diss[:,:,0,:,:]
+            diss = xyz_T[None, :, None, :, :] - xyz_T[:, None, :, None, :]
+            diss = diss[:, :, 0, :, :]
             dis_sq = diss.pow(2).sum(-1)
             mask = (dis_sq < cutoff ** 2) & (dis_sq != 0)
             nbr_list = mask.nonzero(as_tuple=False)[:,:2]
-            offsets=(lattice_points_T.view(xyz_T.shape)
+            offsets = (lattice_points_T.view(xyz_T.shape)
                         [mask.nonzero(as_tuple=False)[:,1],mask.nonzero(as_tuple=False)[:,2]])
 
             # get offsets as original integer multiples of lattice vectors

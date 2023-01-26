@@ -10,14 +10,19 @@ This code repository is developed in the Learning Matter Lab (led by prof. Rafae
 
 ## Installation
 
+### Conda
 ```bash
 conda create -n nff python=3.9
 
-# install rdkti
+# install rdkit
 conda install -c conda-forge rdkit
+# or: pip install rdkit
+
 # install torch; use the command given on the PyTorch website
 # for your specific platform: https://pytorch.org/get-started/locally/
 conda install -c pytorch pytorch torchvision torchaudio
+# or: pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+
 # install NeuralForceField
 pip install .
 ```
@@ -29,6 +34,8 @@ pip install .
 ### Creating a model
 
 ```python
+from nff.train import get_model
+
 params = {
     "n_atom_basis": 256,
     "n_filters": 256,
